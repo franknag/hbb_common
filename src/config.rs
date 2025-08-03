@@ -1765,13 +1765,17 @@ impl LocalConfig {
         LOCAL_CONFIG.read().unwrap().fav.clone()
     }
 
-    pub fn set_ip_mac(mac: &str) -> String {
+    pub fn set_ip_mac(k: String, v: String) {
         let mut config = LOCAL_CONFIG.write().unwrap();
-        if mac == config.ip_mac {
-            return;
+        let v2 = if v.is_empty() { None } else { Some(&v) };
+        if v2 != config.ip_mac.get(&k) {
+            if v2.is_none() {
+                config.ip_mac.remove(&k);
+            } else {
+                config.ip_mac.insert(k, v);
+            }
+            config.store();
         }
-        config.ip_mac = mac.into();
-        config.store();
     }
 
     pub fn get_ip_mac() -> String {
