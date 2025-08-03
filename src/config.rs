@@ -1698,6 +1698,8 @@ pub struct LocalConfig {
     #[serde(default, deserialize_with = "deserialize_vec_string")]
     pub fav: Vec<String>,
     #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
+    pub ip_mac: HashMap<String, String>,
+    #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
     options: HashMap<String, String>,
     // Various data for flutter ui
     #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
@@ -1763,6 +1765,19 @@ impl LocalConfig {
         LOCAL_CONFIG.read().unwrap().fav.clone()
     }
 
+    pub fn set_ip_mac(mac: &str) -> String {
+        let mut config = LOCAL_CONFIG.write().unwrap();
+        if mac == config.ip_mac {
+            return;
+        }
+        config.ip_mac = mac.into();
+        config.store();
+    }
+
+    pub fn get_ip_mac() -> String {
+        LOCAL_CONFIG.read().unwrap().ip_mac.clone()
+    }
+    
     pub fn get_option(k: &str) -> String {
         get_or(
             &OVERWRITE_LOCAL_SETTINGS,
