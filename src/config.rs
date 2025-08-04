@@ -1778,8 +1778,11 @@ impl LocalConfig {
         }
     }
 
-    pub fn get_ip_mac() -> String {
-        LOCAL_CONFIG.read().unwrap().ip_mac
+    pub fn get_ip_mac() {
+        get_or(
+            &LOCAL_CONFIG.read().unwrap().options,
+        )
+        .unwrap_or_default()
     }
     
     pub fn get_option(k: &str) -> String {
