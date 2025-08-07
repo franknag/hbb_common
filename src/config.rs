@@ -395,6 +395,8 @@ pub struct PeerInfoSerde {
     pub hostname: String,
     #[serde(default, deserialize_with = "deserialize_string")]
     pub platform: String,
+    #[serde(default, deserialize_with = "deserialize_string")]
+    pub mac: String,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq)]
@@ -799,6 +801,21 @@ impl Config {
                 config.store();
             }
         }
+    }
+
+    pub fn get_mac() -> String {
+        let mut config = CONFIG.read().unwrap().info.clone();
+        let mut mac = config.info.get("mac");
+        mac
+    }
+
+    pub fn set_mac(mac: String) {
+        let mut config = CONFIG.write().unwrap();
+        if mac == config.info.get("mac") {
+            return;
+        }
+        config.info.insert("mac", mac);
+        config.store();
     }
 
     pub fn set_id(id: &str) {
@@ -1698,8 +1715,6 @@ pub struct LocalConfig {
     #[serde(default, deserialize_with = "deserialize_vec_string")]
     pub fav: Vec<String>,
     #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
-    pub ip_mac: HashMap<String, String>,
-    #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
     options: HashMap<String, String>,
     // Various data for flutter ui
     #[serde(default, deserialize_with = "deserialize_hashmap_string_string")]
@@ -1765,29 +1780,6 @@ impl LocalConfig {
         LOCAL_CONFIG.read().unwrap().fav.clone()
     }
 
-    pub fn set_ip_mac(k: String, v: String) {
-        let mut config = LOCAL_CONFIG.write().unwrap();
-        let v2 = if v.is_empty() { None } else { Some(&v) };
-        if v2 != config.ip_mac.get(&k) {
-            if v2.is_none() {
-                config.ip_mac.remove(&k);
-            } else {
-                config.ip_mac.insert(k, v);
-            }
-            config.store();
-        }
-    }
-
-    pub fn get_ip_mac(k: &str) -> String {
-        get_or(
-            &OVERWRITE_LOCAL_SETTINGS,
-            &LOCAL_CONFIG.read().unwrap().ip_mac,
-            &DEFAULT_LOCAL_SETTINGS,
-            k,
-        )
-        .unwrap_or_default()
-    }
-    
     pub fn get_option(k: &str) -> String {
         get_or(
             &OVERWRITE_LOCAL_SETTINGS,
