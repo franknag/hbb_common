@@ -1517,21 +1517,21 @@ impl PeerConfig {
     }
 
     pub fn get_mac(id: String) -> String {
-        if Self::exists(id) {
-            let mut config = PeerConfig::load(id);
-            let mut mac = config.info.get("mac");
+        if Self::exists(id.to_owned()) {
+            let mut config = PeerConfig::load(id.to_owned());
+            let mut mac = config.info.mac.clone();
             mac
         }
     }
 
     pub fn set_mac(id: String, mac: String) {
-        if Self::exists(id) {
-            let mut config = PeerConfig::load(id);
-            if mac == config.info.get("mac") {
+        if Self::exists(id.to_owned()) {
+            let mut config = PeerConfig::load(id.to_owned());
+            if mac == config.info.mac.clone() {
                 return;
             }
-            config.info.insert("mac", mac);
-            config.store(&config, id);
+            config.info.mac = mac;
+            config.store(id.to_owned());
         }
     }
 
