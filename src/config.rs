@@ -228,7 +228,7 @@ pub struct Resolution {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct PeerConfig {
-    #[serde(default, deserialize_with = "deserialize_string")]
+    #[serde(default, deserialize_with = "deserialize_string")] // Custom code for peer mac address wol
     pub mac: String,
     #[serde(default, deserialize_with = "deserialize_vec_u8")]
     pub password: Vec<u8>,
@@ -351,7 +351,7 @@ pub struct PeerConfig {
 impl Default for PeerConfig {
     fn default() -> Self {
         Self {
-            mac: Default::default(),
+            mac: Default::default(), // Custom code for peer mac address wol
             password: Default::default(),
             size: Default::default(),
             size_ft: Default::default(),
@@ -1517,7 +1517,7 @@ impl PeerConfig {
         (peers, to)
     }
 
-    pub fn get_mac(id: String) -> String {
+    pub fn get_mac(id: String) -> String { // Custom code for peer mac address wol
         if !Self::exists(&id) {
             return Default::default();
         }
@@ -1526,7 +1526,7 @@ impl PeerConfig {
         mac
     }
 
-    pub fn set_mac(id: String, mac: String) {
+    pub fn set_mac(id: String, mac: String) { // Custom code for peer mac address wol
         if Self::exists(&id) {
             let mut config = Self::load(&id);
             if mac == config.mac.clone() {
