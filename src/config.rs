@@ -1517,26 +1517,6 @@ impl PeerConfig {
         (peers, to)
     }
 
-    pub fn get_mac(id: String) -> String { // Custom code for peer mac address wol
-        if !Self::exists(&id) {
-            return Default::default();
-        }
-        let mut config = Self::load(&id);
-        let mut mac = config.mac.clone();
-        mac
-    }
-
-    pub fn set_mac(id: String, mac: String) { // Custom code for peer mac address wol
-        if Self::exists(&id) {
-            let mut config = Self::load(&id);
-            if mac == config.mac.clone() {
-                return;
-            }
-            config.mac = mac;
-            config.store(&id);
-        }
-    }
-
     pub fn exists(id: &str) -> bool {
         Self::path(id).exists()
     }
