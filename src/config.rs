@@ -228,6 +228,8 @@ pub struct Resolution {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct PeerConfig {
+    #[serde(default, deserialize_with = "deserialize_string")]
+    pub mac: String,
     #[serde(default, deserialize_with = "deserialize_vec_u8")]
     pub password: Vec<u8>,
     #[serde(default, deserialize_with = "deserialize_size")]
@@ -349,6 +351,7 @@ pub struct PeerConfig {
 impl Default for PeerConfig {
     fn default() -> Self {
         Self {
+            mac: Default::default(),
             password: Default::default(),
             size: Default::default(),
             size_ft: Default::default(),
@@ -395,8 +398,6 @@ pub struct PeerInfoSerde {
     pub hostname: String,
     #[serde(default, deserialize_with = "deserialize_string")]
     pub platform: String,
-    #[serde(default, deserialize_with = "deserialize_string")]
-    pub mac: String,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq)]
@@ -1520,18 +1521,18 @@ impl PeerConfig {
         if !Self::exists(&id) {
             return Default::default();
         }
-        let mut config = PeerConfig::load(&id);
-        let mut mac = config.info.mac.clone();
+        let mut config = Self::load(&id);
+        let mut mac = config.mac.clone();
         mac
     }
 
     pub fn set_mac(id: String, mac: String) {
         if Self::exists(&id) {
-            let mut config = PeerConfig::load(&id);
-            if mac == config.info.mac.clone() {
+            let mut config = Self::load(&id);
+            if mac == config.mac.clone() {
                 return;
             }
-            config.info.mac = mac;
+            config.mac = mac;
             config.store(&id);
         }
     }
