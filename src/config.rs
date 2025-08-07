@@ -803,21 +803,6 @@ impl Config {
         }
     }
 
-    pub fn get_mac() -> String {
-        let mut config = CONFIG.read().unwrap().info.clone();
-        let mut mac = config.info.get("mac");
-        mac
-    }
-
-    pub fn set_mac(mac: String) {
-        let mut config = CONFIG.write().unwrap();
-        if mac == config.info.get("mac") {
-            return;
-        }
-        config.info.insert("mac", mac);
-        config.store();
-    }
-
     pub fn set_id(id: &str) {
         let mut config = CONFIG.write().unwrap();
         if id == config.id {
@@ -1529,6 +1514,25 @@ impl PeerConfig {
             .filter(|p| !p.2.info.platform.is_empty())
             .collect();
         (peers, to)
+    }
+
+    pub fn get_mac(id: String) -> String {
+        if Self::exists(id) {
+            let mut config = PeerConfig::load(id);
+            let mut mac = config.info.get("mac");
+            mac
+        }
+    }
+
+    pub fn set_mac(id: String, mac: String) {
+        if Self::exists(id) {
+            let mut config = PeerConfig::load(id);
+            if mac == config.info.get("mac") {
+                return;
+            }
+            config.info.insert("mac", mac);
+            config.store(&config, id);
+        }
     }
 
     pub fn exists(id: &str) -> bool {
