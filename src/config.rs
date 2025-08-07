@@ -1517,7 +1517,7 @@ impl PeerConfig {
     }
 
     pub fn get_mac(id: String) -> String {
-        if Self::exists(&id) {
+        if Self::path(&id).exists() {
             let mut config = PeerConfig::load(&id);
             let mut mac = config.info.mac.clone();
             mac
@@ -1525,8 +1525,8 @@ impl PeerConfig {
     }
 
     pub fn set_mac(id: String, mac: String) {
-        if Self::exists(&id) {
-            let mut config = PeerConfig::load(id);
+        if Self::path(&id).exists() {
+            let mut config = PeerConfig::load(&id);
             if mac == config.info.mac.clone() {
                 return;
             }
