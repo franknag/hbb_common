@@ -1518,7 +1518,7 @@ impl PeerConfig {
 
     pub fn get_mac(id: String) -> String {
         if !Self::exists(&id) {
-            return;
+            return Default::default();
         }
         let mut config = PeerConfig::load(&id);
         let mut mac = config.info.mac.clone();
