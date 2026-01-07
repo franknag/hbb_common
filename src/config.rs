@@ -234,6 +234,8 @@ pub struct Resolution {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct PeerConfig {
+    #[serde(default, deserialize_with = "deserialize_string")] // Custom code for peer mac address wol
+    pub mac: String,
     #[serde(default, deserialize_with = "deserialize_vec_u8")]
     pub password: Vec<u8>,
     #[serde(default, deserialize_with = "deserialize_size")]
@@ -362,6 +364,7 @@ pub struct PeerConfig {
 impl Default for PeerConfig {
     fn default() -> Self {
         Self {
+            mac: Default::default(), // Custom code for peer mac address wol
             password: Default::default(),
             size: Default::default(),
             size_ft: Default::default(),
